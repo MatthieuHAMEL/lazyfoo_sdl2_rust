@@ -11,7 +11,7 @@ fn prompt_error_and_panic(message: &str, error: &str, window: Option<&Window>) -
 	// log error here in a file (todo)
 	show_simple_message_box(
 		MessageBoxFlag::ERROR,
-		"WHIP - FATAL ERROR",
+		"FATAL ERROR",
 		&format!("{}: {}", message, error),
 		window,
 	).unwrap(); 
