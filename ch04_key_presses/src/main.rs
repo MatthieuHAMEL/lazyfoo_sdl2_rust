@@ -12,14 +12,14 @@ use std::path::Path;
 fn prompt_err_and_panic(message: &str, error: &str, window: Option<&Window>) -> ! 
 {
   // (in a real application I'd log the error before trying to prompt the msg box, cf. chapter 2 comment)
-	show_simple_message_box(
-		MessageBoxFlag::ERROR,
-		"FATAL ERROR",
-		&format!("{}: {}", message, error),
-		window,
-	).unwrap(); 
+  show_simple_message_box(
+    MessageBoxFlag::ERROR,
+    "FATAL ERROR",
+    &format!("{}: {}", message, error),
+    window,
+  ).unwrap(); 
 
-	panic!("{}: {}", message, error);
+  panic!("{}: {}", message, error);
 }
 
 #[derive(Hash, Eq, PartialEq, Debug)]
@@ -109,10 +109,10 @@ fn main() -> Result<(), String>
       }
     }
     
-		let mut wsuf = window.surface(&event_pump).unwrap();
-		current_surface.blit(None, &mut wsuf, None)?; 
-		wsuf.update_window()?;
+    let mut wsuf = window.surface(&event_pump).unwrap();
+    current_surface.blit(None, &mut wsuf, None)?; 
+    wsuf.update_window()?;
 	}
 	
-	Ok(())
+  Ok(())
 }

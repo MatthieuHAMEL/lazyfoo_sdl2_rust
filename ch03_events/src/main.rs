@@ -8,7 +8,7 @@ use std::path::Path;
 
 fn prompt_error_and_panic(message: &str, error: &str, window: Option<&Window>) -> ! 
 {
-	// log error here in a file (todo)
+	// log error here in a file (TODO)
 	show_simple_message_box(
 		MessageBoxFlag::ERROR,
 		"FATAL ERROR",
@@ -29,7 +29,7 @@ fn main() -> Result<(), String>
   let video_subsystem = sdl_context.video()
     .unwrap_or_else(|e| { prompt_error_and_panic("Video Subsystem Error", &e, None); });
         
-  let window = video_subsystem.window("MatouTest", 1980, 1080)
+  let window = video_subsystem.window("MatouTest", 1000, 600)
     .position_centered().build()
     .map_err(|e| e.to_string())
     .unwrap_or_else(|e| { prompt_error_and_panic("Window Creation Error", &e, None); });
@@ -56,7 +56,6 @@ fn main() -> Result<(), String>
     // Ok to borrow the pump as long as we've finished the event handling
 		let mut wsuf = window.surface(&event_pump).unwrap();
 		surface.blit(None, &mut wsuf, None)?; 
-	 
 		wsuf.update_window()?;
 	}
 	

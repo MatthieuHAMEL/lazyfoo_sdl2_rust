@@ -1,0 +1,7 @@
+[package]
+name = "sdl_05_optimized_format_and_stretching"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sdl2 = "0.37"
