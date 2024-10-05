@@ -50,7 +50,7 @@ fn main() -> Result<(), String>
 	let surface = Surface::load_bmp(&Path::new("data/test.bmp"))
 		.unwrap_or_else(|e| {
 			prompt_error_and_panic("Couldn't load BMP", &e, None);
-		});
+    });
 	
   surface.blit(None, &mut wsuf, None)?; 
   wsuf.update_window()?;

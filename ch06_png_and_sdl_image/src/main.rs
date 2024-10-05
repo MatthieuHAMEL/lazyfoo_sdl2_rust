@@ -123,14 +123,13 @@ fn main() -> Result<(), String>
   let surfaces = MySurfaces::new(wsuf_format)?;
   let mut current_surface = surfaces.get_surface(KeyPressSurface::Default);
 	
-  let mut running = true;
-  while running 
+  'game : loop 
   {
     for event in event_pump.poll_iter() 
     {
       match event 
       {
-        Event::Quit {..} => { running = false },
+        Event::Quit {..} => { break 'game; },
         Event::KeyDown { keycode, .. } => 
         {
           match keycode 

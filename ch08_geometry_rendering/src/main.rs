@@ -74,14 +74,13 @@ fn main() -> Result<(), String>
         prompt_err_and_panic("SDL, no canvas", &error_msg, None);
     });
 
-  let mut running = true;
-  while running 
+  'game : loop 
   {
     for event in event_pump.poll_iter() 
     {
       match event 
       {
-        Event::Quit {..} => { running = false },
+        Event::Quit {..} => { break 'game; },
         _ => {}
       }
     }

@@ -40,15 +40,14 @@ fn main() -> Result<(), String>
 	let surface = Surface::load_bmp(&Path::new("data/test.bmp"))
 		.unwrap_or_else(|e| {	prompt_error_and_panic("Couldn't load BMP", &e, None); });
 	
-	let mut running = true;
-	while running 
+	'game : loop 
   {
 		for event in event_pump.poll_iter()  // equivalent of SDL_PollEvent in a loop
     {
 			use sdl2::event::Event;
 			match event 
       {
-				Event::Quit {..} => { running = false },
+				Event::Quit {..} => { break 'game; },
         _ => {}
       }
     }
