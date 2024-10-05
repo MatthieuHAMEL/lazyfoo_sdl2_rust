@@ -9,7 +9,6 @@ use sdl2::video::WindowContext;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
-use sdl2::rect::Rect;
 use sdl2::render::Canvas;
 use sdl2::render::Texture;
 use sdl2::render::TextureCreator;
@@ -162,7 +161,8 @@ fn main() -> Result<(), String>
      // <=> SDL_RenderClear
     canvas.clear();
     // <=> SDL_RenderCopy
-    canvas.copy(&current_texture, None, Some(Rect::new(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)))?; 
+    // 24/10/05 no need to give the dest rectangle if we want to fill the whole window. It stretches automatically. 
+    canvas.copy(&current_texture, None, None)?; 
     // <=> SDL_RenderPresent
     canvas.present(); 
   }
