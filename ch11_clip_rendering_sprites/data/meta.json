@@ -1,0 +1,10 @@
+{
+  "file": "sprites.png",
+  "sprites": 
+    [
+      { "name": "red_circle", "x": 0, "y": 0, "w": 100, "h": 100 },
+      { "name": "green_circle", "x": 100, "y": 0, "w": 100, "h": 100 },
+      { "name": "yellow_circle", "x": 0, "y": 100, "w": 100, "h": 100 },
+      { "name": "blue_circle", "x": 100, "y": 100, "w": 100, "h": 100 }
+    ]
+}
