@@ -1,0 +1,16 @@
+[package]
+name = "ch10_color_keying"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde_json = "1.0"
+
+[dependencies.sdl2]
+version = "0.37"
+default-features = false
+features = ["image"]
+
+[dependencies.serde]
+version = "1.0.210"
+features = ["derive"]
