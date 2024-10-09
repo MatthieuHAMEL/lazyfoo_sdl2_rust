@@ -1,23 +1,54 @@
 use sdl2::rect::Rect;
-use sdl2::render::{Texture, WindowCanvas};
+use sdl2::render::{Texture, TextureCreator, WindowCanvas};
+use sdl2::image::LoadTexture;
+use sdl2::video::WindowContext;
+use sdl2::pixels::Color;
 
-pub struct Sprite<'a> 
-{
-  texture: &'a Texture<'a>, 
-  src_rect: Rect, // Source rectangle defining the sprite's portion in the texture
-  name: String
+use std::collections::HashMap;
+use std::rc::Rc;
+
+use crate::prompt_err_and_panic;
+
+
+pub struct TextureManager<'a> {
+  textures: HashMap<String, Rc<Texture<'a>>>  // HashMap for caching textures by file path
 }
 
-impl<'a> Sprite<'a> 
+impl<'a> TextureManager<'a>
 {
-  pub fn new(texture: &'a Texture<'a>, src_rect: Rect, name: String) -> Sprite<'a> 
+  pub fn new() -> TextureManager<'a>
   {
-    Sprite { texture, src_rect, name }
+    TextureManager { textures: HashMap::new() }
   }
 
-  pub fn render(&self, canvas: &mut WindowCanvas, x: i32, y: i32) 
+  pub fn load_texture(&mut self, 
+    texture_creator: &'a TextureCreator<WindowContext>,
+    img_path: &str, 
+    color_key: Option<Color>) -> Rc<Texture<'a>>
   {
-    let dest_rect = Rect::new(x, y, self.src_rect.width(), self.src_rect.height());
-    canvas.copy(self.texture, self.src_rect, dest_rect).unwrap();
+    if !self.textures.contains_key(img_path) 
+    {
+      use sdl2::surface::Surface;
+      use sdl2::image::LoadSurface;
+      use std::path::Path;
+      let mut s = Surface::from_file(Path::new(img_path))
+        .unwrap_or_else(|err| { prompt_err_and_panic("img_load_color_key failed", &err, None); });
+      
+      match color_key 
+      {
+        Some(col) => 
+        { 
+          s.set_color_key(true, col)
+          .unwrap_or_else(|err| { prompt_err_and_panic("img_load_color_key(set_color_key) failed", &err, None); }); 
+        },
+        None => {}
+      }
+        
+      let tex = s.as_texture(texture_creator)
+        .unwrap_or_else(|err| { 
+          prompt_err_and_panic("img_load_color_key(as_texture) failed", &err.to_string(), None); });
+      self.textures.insert(img_path.to_string(), Rc::new(tex));
+    }
+    Rc::clone(self.textures.get(img_path).unwrap())
   }
 }

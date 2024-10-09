@@ -1,5 +1,5 @@
 {
-  "file": "sprites.png",
+  "spritesheet": "data/sprites.png",
   "sprites": 
     [
       { "name": "red_circle", "x": 0, "y": 0, "w": 100, "h": 100 },

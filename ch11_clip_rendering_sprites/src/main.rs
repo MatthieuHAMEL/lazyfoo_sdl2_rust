@@ -1,5 +1,9 @@
 extern crate sdl2; 
 
+mod errors;
+mod texture;
+mod sprite;
+
 use sdl2::Sdl;
 use sdl2::EventPump;
 use sdl2::IntegerOrSdlError;
@@ -17,28 +21,11 @@ use sdl2::render::Texture;
 
 use std::path::Path;
 
-mod sprite;
+use errors::*;
+use sprite::create_sprites;
+use sprite::load_sprites_from_json;
+use texture::TextureManager;
 
-#[cfg(test)]
-fn prompt_err_and_panic(message: &str, error: &str, _window: Option<&Window>) -> ! 
-{
-  panic!("{}: {}", message, error);
-}
-
-#[cfg(not(test))]
-fn prompt_err_and_panic(message: &str, error: &str, window: Option<&Window>) -> ! 
-{
-  use sdl2::messagebox::*;
-  // (in a real application I'd log the error before trying to prompt the msg box, cf. chapter 2 comment)
-  show_simple_message_box(
-    MessageBoxFlag::ERROR,
-    "FATAL ERROR",
-    &format!("{}: {}", message, error),
-    window,
-  ).unwrap(); 
-
-  panic!("{}: {}", message, error);
-}
 
 // To group initializations, mainly for readability: I may group them differently in the future.
 // ... maybe in a single struct with the different contexts ...
@@ -74,26 +61,6 @@ fn init_sdl2(win_title: &str, win_width: u32, win_height: u32)
     // no need to return the window anymore, it is held by the canvas
 }
 
-fn img_load<'a>(img_path: &str, texture_creator: &'a TextureCreator<WindowContext>) -> Texture<'a>
-{
-  use crate::sdl2::image::LoadTexture;
-  texture_creator.load_texture(Path::new(img_path))
-    .unwrap_or_else(|err| { prompt_err_and_panic("img_load failed", &err, None); })
-}
-
-fn img_load_color_key<'a>(img_path: &str, texture_creator: &'a TextureCreator<WindowContext>) -> Texture<'a>
-{
-  use crate::sdl2::image::LoadSurface;
-  let mut s = Surface::from_file(Path::new(img_path))
-    .unwrap_or_else(|err| { prompt_err_and_panic("img_load_color_key failed", &err, None); });
-      
-  s.set_color_key(true, Color::RGB(0, 0xff, 0xff))
-    .unwrap_or_else(|err| { prompt_err_and_panic("img_load_color_key(set_color_key) failed", &err, None); });
-      
-  s.as_texture(texture_creator)
-    .unwrap_or_else(|err| { prompt_err_and_panic("img_load_color_key(as_texture) failed", &err.to_string(), None); })
-}
-
 /////////////////////////////////////////////////////////
 
 fn main() -> Result<(), String> 
@@ -106,10 +73,10 @@ fn main() -> Result<(), String>
           .unwrap_or_else(|e| { prompt_err_and_panic("SDL initialization error", &e, None); });
 
   let texture_creator = canvas.texture_creator();
-  let background = img_load("data/background.png", &texture_creator);
-  let lil_guy = img_load_color_key("data/foo.png", &texture_creator);
-  let props_lil_guy = lil_guy.query(); // I may wrap this in some struct in the future
-  
+  let mut texture_manager = TextureManager::new();
+  let sprite_data = load_sprites_from_json("data/meta.json");
+  let sprites = create_sprites(&texture_creator, sprite_data, &mut texture_manager);
+
   canvas.set_draw_color(Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF)); // white, won't change this time
   
   'game : loop 
@@ -125,8 +92,9 @@ fn main() -> Result<(), String>
     
     canvas.clear();
     
-    canvas.copy(&background, None, None)?;
-    canvas.copy(&lil_guy, None, Rect::new(240, 270, props_lil_guy.width, props_lil_guy.height))?;
+    for i in 0..sprites.len() {
+      sprites[i].render(&mut canvas, (100*i) as i32, 50);
+    }
     
     canvas.present(); 
   }
