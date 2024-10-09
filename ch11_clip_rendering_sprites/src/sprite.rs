@@ -1,8 +1,8 @@
-use sdl2::rect::Rect;
-use sdl2::render::{Texture, WindowCanvas};
 use crate::errors::*;
 use crate::texture::TextureManager;
-use sdl2::render::TextureCreator;
+
+use sdl2::rect::Rect;
+use sdl2::render::{Texture, WindowCanvas, TextureCreator};
 use sdl2::video::WindowContext;
 use std::rc::Rc;
 

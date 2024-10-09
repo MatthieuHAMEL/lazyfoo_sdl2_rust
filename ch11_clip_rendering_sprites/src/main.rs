@@ -8,18 +8,11 @@ use sdl2::Sdl;
 use sdl2::EventPump;
 use sdl2::IntegerOrSdlError;
 use sdl2::image::{Sdl2ImageContext, InitFlag};
-use sdl2::surface::Surface;
 use sdl2::VideoSubsystem;
 use sdl2::video::Window;
 use sdl2::event::Event;
 use sdl2::pixels::Color;
-use sdl2::rect::Rect;
 use sdl2::render::Canvas;
-use sdl2::render::TextureCreator;
-use sdl2::video::WindowContext;
-use sdl2::render::Texture;
-
-use std::path::Path;
 
 use errors::*;
 use sprite::create_sprites;
