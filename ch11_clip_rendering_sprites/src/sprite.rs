@@ -10,12 +10,12 @@ pub struct Sprite<'a>
 {
   texture: Rc<Texture<'a>>,
   src_rect: Rect, // Source rectangle defining the sprite's portion in the texture
-  name: String
+  name: SpriteName
 }
 
 impl<'a> Sprite<'a> 
 {
-  pub fn new(texture: Rc<Texture<'a>>, src_rect: Rect, name: String) -> Sprite<'a> 
+  pub fn new(texture: Rc<Texture<'a>>, src_rect: Rect, name: SpriteName) -> Sprite<'a> 
   {
     Sprite { texture, src_rect, name }
   }
@@ -30,10 +30,19 @@ impl<'a> Sprite<'a>
 // Represent deserialized sprite data
 use serde::Deserialize;
 
+#[derive(Debug, Deserialize, PartialEq, Eq, Hash)]
+pub enum SpriteName 
+{
+  RedCircle,
+  GreenCircle,
+  YellowCircle,
+  BlueCircle
+}
+
 #[derive(Deserialize)]
 pub struct SpriteData 
 {
-  name: String,
+  name: SpriteName,
   x: i32,
   y: i32,
   w: u32,
