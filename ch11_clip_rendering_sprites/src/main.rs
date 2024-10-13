@@ -17,8 +17,8 @@ use sdl2::render::Canvas;
 use errors::*;
 use sprite::create_sprites;
 use sprite::load_sprites_from_json;
+use sprite::SpriteName::*;
 use texture::TextureManager;
-
 
 // To group initializations, mainly for readability: I may group them differently in the future.
 // ... maybe in a single struct with the different contexts ...
@@ -85,9 +85,10 @@ fn main() -> Result<(), String>
     
     canvas.clear();
     
-    for i in 0..sprites.len() {
-      sprites[i].render(&mut canvas, (100*i) as i32, 50);
-    }
+    sprites[&RedCircle].render(&mut canvas, 0, 50);
+    sprites[&GreenCircle].render(&mut canvas, 100, 50);
+    sprites[&YellowCircle].render(&mut canvas, 200, 50);
+    sprites[&BlueCircle].render(&mut canvas, 300, 50);
     
     canvas.present(); 
   }

@@ -4,6 +4,7 @@ use crate::texture::TextureManager;
 use sdl2::rect::Rect;
 use sdl2::render::{Texture, WindowCanvas, TextureCreator};
 use sdl2::video::WindowContext;
+use std::collections::HashMap;
 use std::rc::Rc;
 
 pub struct Sprite<'a> 
@@ -30,7 +31,7 @@ impl<'a> Sprite<'a>
 // Represent deserialized sprite data
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Hash, Clone, Copy)]
 pub enum SpriteName 
 {
   RedCircle,
@@ -72,22 +73,20 @@ pub fn load_sprites_from_json(file_path: &str) -> SpriteSheetData
   sprite_data
 }
 
-
+// For now I consider there's only one spritesheet with only one json.
 pub fn create_sprites<'a>(
   texture_creator: &'a TextureCreator<WindowContext>,
   sprite_data: SpriteSheetData,
-  texture_manager: &mut TextureManager<'a>) -> Vec<Sprite<'a>> 
+  texture_manager: &mut TextureManager<'a>) -> HashMap<SpriteName, Sprite<'a>>
 {
-  let tex = {
-    texture_manager.load_texture(texture_creator, &sprite_data.spritesheet, None) // TODO color keying
-  };
+  let tex = texture_manager.load_texture(texture_creator, &sprite_data.spritesheet, None); // TODO color keying
   
-  sprite_data.sprites
-    .into_iter()
-    .map(|data| 
-    {
-      let src_rect = Rect::new(data.x, data.y, data.w, data.h);
-      Sprite::new(tex.clone(), src_rect, data.name)
-    })
-    .collect()
+  // Create a HashMap to store the sprites with their name as the key
+  let mut sprites_map: HashMap<SpriteName, Sprite<'a>> = HashMap::new();
+    
+  for data in sprite_data.sprites {
+    sprites_map.insert(data.name, Sprite::new(tex.clone(), Rect::new(data.x, data.y, data.w, data.h), data.name));
+  }
+    
+  sprites_map
 }
